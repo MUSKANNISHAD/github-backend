@@ -35,14 +35,22 @@ export const CreateRepository = async (req, res) => {
 
 export const getAllRepository = async (req, res) => {
     try {
-        const allRepo = await RepoModel.find({}).populate("owner").populate("issue");
+        const allRepo = await RepoModel
+            .find({})
+            .populate("owner", "-password -token")
+            .populate("issue");
 
-        return res.status(200).json({ message: "all Repo fetched", allRepo })
+        return res.status(200).json({
+            message: "all Repo fetched",
+            allRepo
+        });
 
     } catch (err) {
-        return res.status(500).json({ message: "Internal server err", err })
+        return res.status(500).json({
+            message: "Internal server err",
+            err
+        });
     }
-
 };
 
 export const FetchRepositoryById = async (req, res) => {
