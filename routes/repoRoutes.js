@@ -13,6 +13,6 @@ router.route("/repo/FetchRepoByName/:name").get(FetchRepositoryByName)
 router.route("/repo/fetchAllrepoForCurrentUser/:id").get(FetchAllRepositoryForCurrentUser)
 router.route("/repo/updateRepoById/:id").put(updateRepositoryById)
 router.route("/repo/deleteRepoById/:id").delete(deleteRepositioryById);
-router.route("repo/toggel/:id").patch(toggleRepo);
+router.route("/repo/toggel/:id").patch(toggleRepo);
 
 export default router;
