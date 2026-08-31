@@ -92,8 +92,7 @@ async function startServer() {
 
     let user = "muskanTest"
     const httpServer = http.createServer(app);
-    const io = new Server({
-        httpServer,
+    const io = new Server(httpServer, {
         cors: {
             origin: "*",
             methods: ["GET", "POST"],
@@ -115,8 +114,8 @@ async function startServer() {
         console.log("Crud operation called")
     });
 
-    httpServer.listen(Port), () => {
+    httpServer.listen(Port, () => {
         console.log(`server is listening on PORT ${Port}`);
-    }
+    });
 
 }
