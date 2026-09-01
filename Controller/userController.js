@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import { MongoClient, ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
+import User from "../model/usermodel.js";
 
 dotenv.config();
 
@@ -98,26 +100,42 @@ export const getAllUsers = async (req, res) => {
     }
 };
 
+// export const getUserProfileById = async (req, res) => {
+//     const currentId = req.params.id;
+//     try {
+//         await connectClient();
+//         const db = client.db("GitHub");
+//         const usersCollection = db.collection("users");
+
+//         const user = await usersCollection.findOne({
+//             _id: new ObjectId(currentId),
+//         })
+
+//         if (!user) {
+//             return res.status(404).json({ message: "user not found" });
+//         }
+
+//         res.json(user, { message: "Profile fetched" });
+//     } catch (err) {
+//         return res.status(500).json({ message: "Internal server error", err });
+//     }
+// };
+
+
 export const getUserProfileById = async (req, res) => {
-    const currentId = req.params.id;
+    const { id } = req.params;
     try {
-        await connectClient();
-        const db = client.db("GitHub");
-        const usersCollection = db.collection("users");
-
-        const user = await usersCollection.findOne({
-            _id: new ObjectId(currentId),
-        })
-
+        const user = await User.findOne({ _id: id });
         if (!user) {
             return res.status(404).json({ message: "user not found" });
         }
+        res.json({ user, message: "Profile fetched" });
 
-        res.json(user, { message: "Profile fetched" });
+
     } catch (err) {
-        return res.status(500).json({ message: "Internal server error", err });
+        return res.status(500).json({ message: "Internal server err", err });
     }
-};
+}
 
 export const updateUserProfileById = async (req, res) => {
     const currentID = req.params.id;

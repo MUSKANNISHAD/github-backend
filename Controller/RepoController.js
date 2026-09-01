@@ -61,8 +61,8 @@ export const FetchRepositoryById = async (req, res) => {
 
         return res.status(200).json({ message: `fetched all repositor of id ${id}`, Repository });
 
-
     } catch (err) {
+        console.error("error is : ", err.message);
         return res.status(500).json({ message: "Internal server err", err })
     }
 
@@ -71,19 +71,20 @@ export const FetchRepositoryById = async (req, res) => {
 export const FetchRepositoryByName = async (req, res) => {
     const { name } = req.params;
     try {
-        const fetchedRepo = await RepoModel.find({ name }).populate("owner").populate("issue");
+        const fetchedRepo = await RepoModel.findOne({ name }).populate("owner").populate("issue");
 
         return res.status(200).json({ message: `fetched all repositor of name ${name}`, fetchedRepo });
 
     } catch (err) {
+        console.error("error is : ", err.message);
         return res.status(500).json({ message: "Internal server err", err })
     }
 };
 
 export const FetchAllRepositoryForCurrentUser = async (req, res) => {
-    const { userId } = req.params;
+    const { id } = req.params;
     try {
-        const fetchedRepository = await RepoModel.find({ owner: userId }).populate("owner").populate("issue");
+        const fetchedRepository = await RepoModel.find({ owner: id }).populate("owner").populate("issue");
 
         if (!fetchedRepository || fetchedRepository.length == 0) {
             return res.status(400).json({ message: "you don't have any Repository yet" });
@@ -92,6 +93,7 @@ export const FetchAllRepositoryForCurrentUser = async (req, res) => {
         return res.status(200).json({ fetchedRepository });
 
     } catch (err) {
+        console.error("error is : ", err.message);
         return res.status(500).json({ message: "Internal server err", err })
     }
 
@@ -101,12 +103,12 @@ export const updateRepositoryById = async (req, res) => {
     const { id } = req.params;
     const { content, description } = req.body;
     try {
-        const repository = await RepoModel.findById(id);
+        const repository = await RepoModel.findById({ _id: id });
         if (!repository) {
             return res.status(404).json({ message: "repository not found" });
         }
 
-        repository.content.push(content);
+        repository.content = content;
         repository.description = description;
 
         const updatedRepository = await repository.save();
@@ -139,7 +141,7 @@ export const deleteRepositioryById = async (req, res) => {
 export const toggleRepo = async (req, res) => {
     const { id } = req.params;
     try {
-        const repository = await RepoModel.findById(id);
+        const repository = await RepoModel.findById({ _id: id });
         if (!repository) {
             return res.status(404).json({ message: "Repository not found" });
         }
